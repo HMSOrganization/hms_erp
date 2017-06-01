@@ -26,76 +26,78 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.*;
 
-/**
- *
- * @author Ritu
- */
-
+@WebServlet(urlPatterns = {"/UserAccessController"})
 public class UserAccessController extends HttpServlet {
- List<UserPojo> upp = new ArrayList();
-     ServletContext sc=getServletContext();
-       String vname=(String)sc.getAttribute("name");
-        
-        
+
+    List<UserPojo> upp = new ArrayList();
+    //ServletContext sc=getServletContext();
+    // String vname=(String)sc.getAttribute("name");
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
         response.setContentType("text/html;charset=UTF-8");
-        System.out.print(vname);
+        String vname = request.getParameter("uname");
+        System.out.print("hello..." + vname);
         System.out.println("Calls Controller");
-          String []module = request.getParameterValues("mname");
-       
+        String[] module = request.getParameterValues("mname");
+        String[] form = request.getParameterValues("fname");
+
+        DataConnect dcc = new DataConnect();
+
+        Connection conn = dcc.getConnect();
+
+        List<UserPojo> upp = new ArrayList();
         System.out.print(module.length);
-         for(int i = 0;i<module.length;i++)
-        {
-           
-                 System.out.println(module[i]);
+        for (int i = 0; i < module.length; i++) {
+
+            System.out.println(module[i]);
             
-           
+            UserPojo up = new UserPojo();
+            up.setModulename(module[i]);
+            up.setUsername(vname);
+            upp.add(up);
+
+        }
+          
+        List<UserPojo> updatedForm = new ArrayList();
+        System.out.print(form.length);
+        for (int i = 0; i < form.length; i++) {
+
+            System.out.println(form[i]);
+            
+            UserPojo up = new UserPojo();
+            up.setFormname(form[i]);
+            up.setUsername(vname);
+            updatedForm.add(up);
+
         }
         
+        userModuleMapDao.addUpdatedModule(upp);
+        userModuleMapDao.addUpdatedForm(updatedForm);
+        response.sendRedirect(request.getContextPath() + "/HMSAdmin/dashboard_admin.jsp");
         
-       System.out.println("Username : "+vname);
-     
-        
-                DataConnect dcc = new DataConnect();
-
-                Connection conn = dcc.getConnect();
-
-              List<UserPojo> upp= new ArrayList();
-             
-               UserPojo up=new UserPojo();
-               up.setUsername(vname);
-               upp.add(up);
-                userModuleMapDao.addModule(upp);
-              //  search(request, response);
-                  response.sendRedirect(request.getContextPath() + "/HMSAdmin/dashboard_admin.jsp");
-        //response.sendRedirect("");
     }
-     
+
     @Override
     public void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            
+
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(UserAccessController.class.getName()).log(Level.SEVERE, null, ex);
         }
-          
+
     }
 
-    
     @Override
     public void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException
-    {
+            throws ServletException, IOException {
         try {
             processRequest(request, response);
         } catch (SQLException ex) {
             Logger.getLogger(UserAccessController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-//    
-}
 
-  
+}

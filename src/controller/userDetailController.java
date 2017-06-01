@@ -27,7 +27,8 @@ import javax.servlet.http.HttpSession;
 
 @WebServlet(urlPatterns = {"/userDetailController"})
 public class userDetailController extends HttpServlet {
-     UserPojo upp = new UserPojo();
+
+    UserPojo upp = new UserPojo();
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, SQLException {
@@ -36,16 +37,14 @@ public class userDetailController extends HttpServlet {
         String flag = request.getParameter("flag");
         System.out.println(flag + "-----------");
         String category = request.getParameter("cname");
-                String password = request.getParameter("pass");
-                String username = request.getParameter("name"); 
+        String password = request.getParameter("pass");
+        String username = request.getParameter("name");
         if (flag.equalsIgnoreCase("insert")) {
             try {
                 DataConnect dc = new DataConnect();
 
                 Connection con = dc.getConnect();
 
-                 
-               
                 upp.setCategory(category);
                 upp.setPassword(password);
                 upp.setUname(username);
@@ -57,29 +56,24 @@ public class userDetailController extends HttpServlet {
             } catch (Exception e) {
                 out.print("Connection error!" + e);
             }
-           response.sendRedirect(request.getContextPath() + "/HMSAdmin/add_userAccess.jsp?uname="+username + "");
-           
+            response.sendRedirect(request.getContextPath() + "/HMSAdmin/add_userAccess.jsp?uname=" + username + "");
+
             System.out.print(username);
 
         }
     }
 
-        @Override
-        protected void doGet
-        (HttpServletRequest request, HttpServletResponse response)
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            try {
-                processRequest(request, response);
+        try {
+            processRequest(request, response);
 
-            } catch (SQLException ex) {
-                Logger.getLogger(ModuleController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-
+        } catch (SQLException ex) {
+            Logger.getLogger(ModuleController.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-    
-
-    
+    }
 
     private void searchModule(HttpServletRequest request, HttpServletResponse response) throws IOException, SQLException {
         List<UserPojo> listcheck = moduleMapDao.selectModule(upp);
@@ -87,10 +81,8 @@ public class userDetailController extends HttpServlet {
         session.setAttribute("listcheck", listcheck);
         System.out.println("Size---" + listcheck.size());
         List<UserPojo> listuncheck = moduleMapDao.UnselectModule(upp);
-        HttpSession session1=request.getSession();
+        HttpSession session1 = request.getSession();
         session1.setAttribute("listuncheck", listuncheck);
-        
-        
 
     }
 
@@ -98,10 +90,9 @@ public class userDetailController extends HttpServlet {
         List<UserPojo> listfcheck = formMapDao.selectForm(upp);
         HttpSession session1 = request.getSession();
         session1.setAttribute("listfcheck", listfcheck);
-         List<UserPojo> listfuncheck = formMapDao.UnselectForm(upp);
+        List<UserPojo> listfuncheck = formMapDao.UnselectForm(upp);
         HttpSession session2 = request.getSession();
         session2.setAttribute("listfuncheck", listfuncheck);
-     
 
     }
 
